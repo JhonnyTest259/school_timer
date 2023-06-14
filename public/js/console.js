@@ -1,6 +1,6 @@
 const url = window.location.hostname.includes("localhost")
   ? "http://localhost:8080"
-  : "";
+  : "https://schooltimer-production.up.railway.app/";
 
 let usuario = null;
 let token = "";
