@@ -1,7 +1,9 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
-const { validarCampos } = require("../middlewares/validar-campos");
+const { validateFields } = require("../middlewares/validate-fields");
 
+const { validateJWT } = require("../middlewares/validate-jwt");
+const { isAdminRole } = require("../middlewares/validate-roles");
 const {
   createUser,
   deleteUser,
@@ -9,15 +11,13 @@ const {
   getUser,
   updateUser,
   updateTimerOfSchool,
-} = require("../controllers/users.controller");
+} = require("../controllers/user.controller");
 const {
-  emailExiste,
-  esRoleValido,
+  thereIsAEmail,
+  isValidRole,
   thereIsASchool,
-  existeUsuarioPorId,
+  thereIsUserById,
 } = require("../helpers/db-validators");
-const { validarJWT } = require("../middlewares/validar-jwt");
-const { esAdminRole } = require("../middlewares/validar-roles");
 const router = new Router();
 
 router.get("/", getUser);
@@ -25,16 +25,16 @@ router.get(
   "/:id",
   [
     check("id", "No es un id de mongo").isMongoId(),
-    check("id").custom(existeUsuarioPorId),
-    validarCampos,
+    check("id").custom(thereIsUserById),
+    validateFields,
   ],
   getUserByID
 );
 router.post(
   "/",
   [
-    validarJWT,
-    esAdminRole,
+    validateJWT,
+    isAdminRole,
     check("name", "El nombre es obligatorio").not().isEmpty(),
     check("password", "El password debe contener mas de 6 letras").isLength({
       min: 6,
@@ -42,38 +42,43 @@ router.post(
     check("school", "El colegio no es valido").isMongoId(),
     check("school").custom(thereIsASchool),
     check("email", "El email no es válido").isEmail(),
-    check("email").custom(emailExiste),
-    check("rol").custom(esRoleValido),
-    validarCampos,
+    check("email").custom(thereIsAEmail),
+    check("rol").custom(isValidRole),
+    validateFields,
   ],
   createUser
 );
 router.put(
   "/:id",
   [
-    validarJWT,
-    esAdminRole,
+    validateJWT,
+    isAdminRole,
     check("id", "Debe ser un id válido").isMongoId(),
-    check("id").custom(existeUsuarioPorId),
-    check("rol").custom(esRoleValido),
-    validarCampos,
+    check("id").custom(thereIsUserById),
+    check("rol").custom(isValidRole),
+    validateFields,
   ],
   updateUser
 );
 // Ruta para actualizar el temporizador de la escuela de un usuario
 router.put(
   "/school/timer/:id",
-  [validarJWT, check("id", "Debe ser un id válido").isMongoId(), validarCampos],
+  [
+    validateJWT,
+    check("id", "Debe ser un id válido").isMongoId(),
+    check("timer", "El valor no puede ser vacio").not().isEmpty(),
+    validateFields,
+  ],
   updateTimerOfSchool
 );
 router.delete(
   "/:id",
   [
-    validarJWT,
-    esAdminRole,
+    validateJWT,
+    isAdminRole,
     check("id", "Debe ser un id válido").isMongoId(),
-    check("id").custom(existeUsuarioPorId),
-    validarCampos,
+    check("id").custom(thereIsUserById),
+    validateFields,
   ],
   deleteUser
 );

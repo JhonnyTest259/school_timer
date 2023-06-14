@@ -1,7 +1,10 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
-const { validarCampos } = require("../middlewares/validar-campos");
 const { thereIsASchool } = require("../helpers/db-validators");
+const { validateFields } = require("../middlewares/validate-fields");
+const { isAdminRole } = require("../middlewares/validate-roles");
+const { validateJWT } = require("../middlewares/validate-jwt");
+
 const {
   getSchool,
   getSchoolById,
@@ -18,7 +21,7 @@ router.get(
   [
     check("id", "No es un id de mongo").isMongoId(),
     check("id").custom(thereIsASchool),
-    validarCampos,
+    validateFields,
   ],
   getSchoolById
 );
@@ -27,28 +30,28 @@ router.post(
   [
     // validarJWT,
     check("name", "El nombre es obligatorio").not().isEmpty(),
-    validarCampos,
+    validateFields,
   ],
   createSchool
 );
 router.put(
   "/:id",
   [
-    // validarJWT,
+    validateJWT,
     check("id", "Debe ser un id válido").isMongoId(),
     check("id").custom(thereIsASchool),
-    validarCampos,
+    validateFields,
   ],
   updateSchool
 );
 router.delete(
   "/:id",
   [
-    // validarJWT,
-    // esAdminRole,
+    validateJWT,
+    isAdminRole,
     check("id", "Debe ser un id válido").isMongoId(),
     check("id").custom(thereIsASchool),
-    validarCampos,
+    validateFields,
   ],
   deleteSchool
 );

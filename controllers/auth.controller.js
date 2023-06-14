@@ -1,14 +1,17 @@
 const { response } = require("express");
 const bcryptjs = require("bcryptjs");
 const { User } = require("../models");
-const { generarJWT } = require("../helpers/generar-JWT");
+const { generateJWT } = require("../helpers/generate-jwt");
 
 const login = async (req, res = response) => {
   const { email, password } = req.body;
 
   try {
-    //Verificar si el email existe
-    const user = await User.findOne({ email });
+    //check if exist email
+    const user = await User.findOne({ email }).populate("school", [
+      "name",
+      "timer",
+    ]);
     if (!user) {
       return res.status(400).json({
         msg: "Usuario / Password no son correctos - correo",
@@ -21,7 +24,7 @@ const login = async (req, res = response) => {
       });
     }
 
-    //Verificar contraseña
+    //password verify
     const validPassword = bcryptjs.compareSync(password, user.password);
     if (!validPassword) {
       return res.status(400).json({
@@ -30,7 +33,7 @@ const login = async (req, res = response) => {
     }
 
     //JWT
-    const token = await generarJWT(user.id);
+    const token = await generateJWT(user.id);
 
     res.json({
       user,
@@ -43,7 +46,15 @@ const login = async (req, res = response) => {
     });
   }
 };
+const renovarToken = async (req, res) => {
+  const { user } = req;
+  //JWT
+  const token = await generateJWT(user.id);
+  const us = await User.findOne({ email: user.email }).populate("school");
+  res.json({ user: us, token });
+};
 
 module.exports = {
   login,
+  renovarToken,
 };

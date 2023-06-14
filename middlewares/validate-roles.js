@@ -1,4 +1,4 @@
-const esAdminRole = (req, res, next) => {
+const isAdminRole = (req, res, next) => {
   if (!req.user) {
     return res
       .status(500)
@@ -14,7 +14,7 @@ const esAdminRole = (req, res, next) => {
   next();
 };
 
-const tieneRole = (...roles) => {
+const hasARole = (...roles) => {
   return (req, res, next) => {
     if (!req.user) {
       return res.status(500).json({
@@ -31,4 +31,4 @@ const tieneRole = (...roles) => {
   };
 };
 
-module.exports = { esAdminRole, tieneRole };
+module.exports = { isAdminRole, hasARole };

@@ -1,20 +1,20 @@
 const Role = require("../models/rol");
-const { Categoria, User, School } = require("../models");
+const { User, School } = require("../models");
 
-const esRoleValido = async (rol = "") => {
+const isValidRole = async (rol = "") => {
   const existeRol = await Role.findOne({ rol });
   if (!existeRol) {
     throw new Error(`${rol} no es un rol válido - no existe`);
   }
 };
 
-const emailExiste = async (email = "") => {
+const thereIsAEmail = async (email = "") => {
   const existeEmail = await User.findOne({ email });
   if (existeEmail) {
     throw new Error(`El correo ${email} ya esta registrado`);
   }
 };
-const existeUsuarioPorId = async (id) => {
+const thereIsUserById = async (id) => {
   const existeUsuario = await User.findById(id);
   if (!existeUsuario) {
     throw new Error(`El id no existe ${id}`);
@@ -52,10 +52,10 @@ const thereIsASchool = async (id) => {
 
 module.exports = {
   thereIsASchool,
-  emailExiste,
-  esRoleValido,
+  thereIsAEmail,
+  isValidRole,
   //   estaBorradaCategoria,
   //   existeCategoria,
-  existeUsuarioPorId,
+  thereIsUserById,
   //   coleccionesPermitidas,
 };
