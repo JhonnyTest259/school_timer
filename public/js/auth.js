@@ -2,7 +2,7 @@ const myForm = document.querySelector("form");
 
 const url = window.location.hostname.includes("localhost")
   ? "http://localhost:8080"
-  : "https://schooltimer-production.up.railway.app/";
+  : "https://schooltimer-production.up.railway.app";
 
 myForm.addEventListener("submit", (event) => {
   event.preventDefault();
