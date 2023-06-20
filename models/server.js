@@ -14,6 +14,7 @@ class Server {
       auth: "/api/auth",
       school: "/api/school",
       users: "/api/users",
+      roles: "/api/roles",
     };
 
     //db connection
@@ -43,6 +44,7 @@ class Server {
   }
   routers() {
     this.app.use(this.paths.auth, require("../routes/auth"));
+    this.app.use(this.paths.roles, require("../routes/roles"));
     this.app.use(this.paths.school, require("../routes/school"));
     this.app.use(this.paths.users, require("../routes/users"));
   }

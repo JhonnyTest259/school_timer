@@ -2,9 +2,10 @@ const myForm = document.querySelector("form");
 
 const url = window.location.hostname.includes("localhost")
   ? "http://localhost:8080"
-  : "https://schooltimer-production.up.railway.app";
+  : "http://192.168.0.9:8080";
 
-myForm.addEventListener("submit", (event) => {
+localStorage.clear();
+myForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const formData = {};
@@ -22,23 +23,26 @@ myForm.addEventListener("submit", (event) => {
     },
   })
     .then((resp) => resp.json())
-    .then(({ msg, token }) => {
+    .then(async ({ msg, token }) => {
       if (msg) {
         return console.error(msg);
       }
       localStorage.setItem("token", token);
-      window.location = "console.html";
+
+      const resp = await fetch(`${url}/api/auth`, {
+        headers: {
+          "x-token": token,
+        },
+      });
+      const { user: userDB, token: tokenDB } = await resp.json();
+      console.log(userDB);
+      if (userDB.rol === "ADMIN_ROLE") {
+        window.location = "admin.html";
+      } else {
+        window.location = "console.html";
+      }
     })
     .catch((err) => {
       console.log(err);
     });
 });
-
-// button.addEventListener("click", () => {
-//   console.log(google.accounts.id);
-//   google.accounts.id.disableAutoSelect();
-//   google.accounts.id.revoke(localStorage.getItem("correo"), (done) => {
-//     localStorage.clear();
-//     location.reload();
-//   });
-// });

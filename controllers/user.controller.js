@@ -3,7 +3,8 @@ const bcryptjs = require("bcryptjs");
 const { User, School } = require("../models");
 
 const getUser = async (req, res = response) => {
-  const query = { state: true };
+  const { rol } = req.query;
+  const query = { rol };
   const user = await User.find(query).populate("school", ["name", "timer"]);
   res.json(user);
 };
