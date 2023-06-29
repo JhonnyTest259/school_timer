@@ -2,7 +2,7 @@ const myForm = document.querySelector("form");
 
 const url = window.location.hostname.includes("localhost")
   ? "http://localhost:8080"
-  : "http://192.168.0.9:8080";
+  : "http://192.168.0.6:8080";
 
 localStorage.clear();
 myForm.addEventListener("submit", async (event) => {

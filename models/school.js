@@ -15,6 +15,16 @@ const schoolSchema = Schema({
     default: true,
     required: true,
   },
+  // hour: {
+  //   type: String,
+  //   validate: {
+  //     validator: function (value) {
+  //       return /^([1-9]|1[0-2]):([0-5][0-9])\s(am|pm)$/i.test(value);
+  //     },
+  //     message: "El formato de hora debe ser 'hh:mm am/pm'",
+  //   },
+  //   required: true,
+  // },
 });
 
 //Me sirve para sobreescribir la funcion JSON para el retorno de la respuesta
